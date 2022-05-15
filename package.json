@@ -2,7 +2,7 @@
   "name": "erc20-event-indexer",
   "version": "0.0.0",
   "description": "erc-20-event-indexer",
-  "main": "app.ts",
+  "main": "src/app.ts",
   "repository": "git@github.com:AbrahamGeorge8547/erc20-event-indexer.git",
   "author": "Abraham George",
   "license": "MIT",
