@@ -1,0 +1,21 @@
+{
+  "name": "erc20-event-indexer",
+  "version": "0.0.0",
+  "description": "erc-20-event-indexer",
+  "main": "app.ts",
+  "repository": "git@github.com:AbrahamGeorge8547/erc20-event-indexer.git",
+  "author": "Abraham George",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "ts-node": "^10.7.0",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.4"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn ./src/app.ts",
+    "start": "node dist/app.js"
+  }
+}
