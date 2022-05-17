@@ -4,7 +4,7 @@ import { Itoken } from '../interfaces/token.interface';
 const tokenSchema = new Schema<Itoken>({
   blockNumber: Number,
   blockHash: String,
-  transactionIndex: String,
+  transactionIndex: Number,
   transactionHash: String,
   from: String,
   to: String,

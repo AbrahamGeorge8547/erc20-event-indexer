@@ -3,7 +3,7 @@ import ItokenMeta from '../interfaces/tokenMeta.interface';
 
 const tokenMetaRepo = {
   create(data: Partial<ItokenMeta>) {
-    tokenMeta.create({ ...data, _id: data.tokenAddress });
+    tokenMeta.create({ ...data });
   },
 
   exists(tokenAddress: string) {
