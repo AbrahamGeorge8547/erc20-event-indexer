@@ -1,11 +1,23 @@
-import { Document } from 'mongoose';
+import { Document } from "mongoose";
 
-export interface Itoken extends Document {
-    blockNumber: Number;
-    blockHash: String;
-    transactionIndex: Number;
-    transactionHash: String;
-    from: String;
-    to: String;
-    amount: String;
+// export interface Itoken extends Document {
+//   blockNumber: number;
+//   blockHash: string;
+//   transactionIndex: number;
+//   transactionHash: string;
+//   from: string;
+//   to: string;
+//   amount: string;
+// }
+
+export interface Btoken {
+  blockNumber: number;
+  blockHash: string;
+  transactionIndex: number;
+  transactionHash: string;
+  from: string;
+  to: string;
+  amount: string;
 }
+
+export interface Itoken extends Btoken, Document {}

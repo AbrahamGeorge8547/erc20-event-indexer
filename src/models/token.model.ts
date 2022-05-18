@@ -5,7 +5,7 @@ const tokenSchema = new Schema<Itoken>({
   blockNumber: Number,
   blockHash: String,
   transactionIndex: Number,
-  transactionHash: String,
+  transactionHash: {type: String, unique: true},
   from: String,
   to: String,
   amount: String,
