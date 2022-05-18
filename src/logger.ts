@@ -10,11 +10,9 @@ const transport: DailyRotateFile = new DailyRotateFile({
 });
 
 const format = winston.format.combine(
-  winston.format.colorize(),
   winston.format.timestamp(),
-  winston.format.align(),
   winston.format.printf(
-    info => `${info.timestamp} ${info.level}: ${info.message}`, //eslint-disable-line
+    info => `${info.timestamp} ${info.level}:${info.message}`, //eslint-disable-line
   ),
 );
 const logger = winston.createLogger({
@@ -47,22 +45,25 @@ if (process.env.NODE_ENV !== 'production') {
 
 class Logger {
   public functionName!: string;
+  public moduleName!: string;
 
-  constructor(functionName: string) {
-    this.functionName = functionName;
-    logger.info(`Entering ${functionName}`);
+  constructor(moduleName: string) {
+    this.moduleName = moduleName;
   }
-
+  public entry(functionName: string) {
+    this.functionName = functionName;
+    logger.info(`Entering ${this.moduleName} || ${this.functionName}`)
+  } 
   public exit() {
-    logger.info(`Exiting ${this.functionName}`);
+    logger.info(`Exiting ${this.moduleName} || ${this.functionName}`);
   }
 
   public info(log: string) {
-    logger.info(`${this.functionName}|| ${log}`);
+    logger.info(`${this.moduleName} || ${this.functionName}|| ${log}`);
   }
 
   public error(log: string) {
-    logger.error(`${this.functionName}|| ${log}`);
+    logger.error(`${this.moduleName} || ${this.functionName}|| ${log}`);
   }
 }
 export default Logger;

@@ -5,7 +5,7 @@ import indexer from './indexer';
 const app = async () => {
   // console.log(process.argv[2], os.cpus())
   await connector();
-  await indexer('0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0');
+  await indexer('0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48');
 };
 
 app();
