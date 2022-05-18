@@ -8,6 +8,14 @@ const transport: DailyRotateFile = new DailyRotateFile({
   maxSize: '20m',
   maxFiles: '14d',
 });
+const transportDebug: DailyRotateFile = new DailyRotateFile({
+  filename: './logs/debug-%DATE%.log',
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: true,
+  maxSize: '20m',
+  maxFiles: '14d',
+  level: 'debug'
+});
 
 const format = winston.format.combine(
   winston.format.timestamp(),
@@ -19,6 +27,7 @@ const logger = winston.createLogger({
   format,
   transports: [
     transport,
+    transportDebug
   ],
 });
 
@@ -61,8 +70,11 @@ class Logger {
   public info(log: string) {
     logger.info(`${this.moduleName} || ${this.functionName}|| ${log}`);
   }
+  public debug(log: string) {
+    logger.debug(`${this.moduleName} || ${this.functionName}|| ${log}`);
+  }
 
-  public error(log: string) {
+  public error(log: Error) {
     logger.error(`${this.moduleName} || ${this.functionName}|| ${log}`);
   }
 }
