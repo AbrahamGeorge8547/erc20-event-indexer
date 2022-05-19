@@ -1,47 +1,46 @@
-import * as winston from 'winston';
-import DailyRotateFile from 'winston-daily-rotate-file';
+import * as winston from "winston";
+import DailyRotateFile from "winston-daily-rotate-file";
 
 const transport: DailyRotateFile = new DailyRotateFile({
-  filename: './logs/application-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
+  filename: "./logs/application-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
   zippedArchive: true,
-  maxSize: '20m',
-  maxFiles: '14d',
+  maxSize: "20m",
+  maxFiles: "14d",
 });
 const transportDebug: DailyRotateFile = new DailyRotateFile({
-  filename: './logs/debug-%DATE%.log',
-  datePattern: 'YYYY-MM-DD',
+  filename: "./logs/debug-%DATE%.log",
+  datePattern: "YYYY-MM-DD",
   zippedArchive: true,
-  maxSize: '20m',
-  maxFiles: '14d',
-  level: 'debug'
+  maxSize: "20m",
+  maxFiles: "14d",
+  level: "debug",
 });
 
 const format = winston.format.combine(
   winston.format.timestamp(),
   winston.format.printf(
-    info => `${info.timestamp} ${info.level}:${info.message}`, //eslint-disable-line
-  ),
+    (info) => `${info.timestamp} ${info.level}:${info.message}` //eslint-disable-line
+  )
 );
 const logger = winston.createLogger({
   format,
-  transports: [
-    transport,
-    transportDebug
-  ],
+  transports: [transport, transportDebug],
 });
 
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new winston.transports.Console({
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.timestamp(),
-      winston.format.align(),
-      winston.format.printf(
-        info => `${info.timestamp} ${info.level}: ${info.message}`, //eslint-disable-line
+if (process.env.NODE_ENV !== "production") {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.timestamp(),
+        winston.format.align(),
+        winston.format.printf(
+          (info) => `${info.timestamp} ${info.level}: ${info.message}` //eslint-disable-line
+        )
       ),
-    ),
-  }));
+    })
+  );
 }
 
 /**
@@ -61,8 +60,8 @@ class Logger {
   }
   public entry(functionName: string) {
     this.functionName = functionName;
-    logger.info(`Entering ${this.moduleName} || ${this.functionName}`)
-  } 
+    logger.info(`Entering ${this.moduleName} || ${this.functionName}`);
+  }
   public exit() {
     logger.info(`Exiting ${this.moduleName} || ${this.functionName}`);
   }

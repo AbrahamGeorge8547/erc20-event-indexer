@@ -14,6 +14,7 @@ const tokenRepo = {
     try {
       logger.info(`Inserting ${docs.length} documents`);
       const model = tokenSchema(tokenAddress);
+      //bulkwrite docs to db
       await model.bulkWrite(
         docs.map((doc) => ({
           updateOne: {
