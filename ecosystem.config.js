@@ -1,7 +1,7 @@
 module.exports = {
   apps : [{
     name: "Indexer",
-    script: 'dist/listnerCreator/listner.service.js',
+    script: 'dist/listenerCreator/listener.service.js',
     instances: 2,
   }],
 };

@@ -1,4 +1,4 @@
-import ethers from "ethers";
+import { ethers } from "ethers";
 import ItokenMeta from "../interfaces/tokenMeta.interface";
 import tokenMetaRepo from "../repository/tokenMeta.repo";
 import Logger from "../logger";
@@ -14,46 +14,41 @@ const tokenMetaService = {
    * @returns first block number of the token
    * @description fetches metadata of the token and creates the db entry
    */
-  async checkOrCreate(
+  async createTokenMetadata(
     tokenAddress: string,
     contract: ethers.Contract
   ): Promise<number> {
-    logger.entry("CheckOrCreate");
-    logger.info("Checking if contract address already indexed");
-    const check = await tokenMetaRepo.exists(tokenAddress);
-    if (!check) {
-      logger.info("Token not indexed");
-      // fetches name, decimal, symbol and first block of the token
-      const promises = [
-        contract.name(),
-        contract.decimals(),
-        contract.symbol(),
-        this.getFirstBlock(tokenAddress),
-      ];
-      const result = await Promise.allSettled(promises);
-      let data: Partial<ItokenMeta> = {};
-      data.status = "CREATED";
-      data.tokenAddress = tokenAddress;
-      if (result[0].status === "fulfilled") {
-        data.tokenName = result[0].value;
-      }
-      if (result[1].status === "fulfilled") {
-        console.log(result[1]);
-        // data['decimal'] = ethers.BigNumber.from(result[1].value).toNumber();
-      }
-      if (result[2].status === "fulfilled") {
-        data.symbol = result[2].value;
-      }
-      if (result[3].status === "fulfilled") {
-        data.firstBlock = result[3].value;
-        console.log(result[3].value);
-      }
-      logger.info(`Adding token: ${data.tokenName} to meta data`);
-      await tokenMetaService.create(data);
+    logger.entry("createTokenMetadata");
+    logger.info("Token not indexed");
+    // fetches name, decimal, symbol and first block of the token
+    const promises = [
+      contract.name(),
+      contract.decimals(),
+      contract.symbol(),
+      this.getFirstBlock(tokenAddress),
+    ];
+    let firstBlock =0;
+    const result = await Promise.allSettled(promises);
+    let data: Partial<ItokenMeta> = {};
+    data.status = "CREATED";
+    data.tokenAddress = tokenAddress;
+    if (result[0].status === "fulfilled") {
+      data.tokenName = result[0].value;
     }
-    const data = await tokenMetaRepo.findOne({ tokenAddress });
+    if (result[1].status === "fulfilled") {
+      data.decimal = ethers.BigNumber.from(result[1].value).toNumber();
+    }
+    if (result[2].status === "fulfilled") {
+      data.symbol = result[2].value;
+    }
+    if (result[3].status === "fulfilled") {
+      data.firstBlock = result[3].value;
+      firstBlock = data.firstBlock || 0;
+    }
+    logger.info(`Adding token: ${data.tokenName} to meta data`);
+    await tokenMetaService.create(data);
     logger.exit();
-    return data?.firstBlock || 0;
+    return firstBlock;
   },
 
   /**
@@ -90,6 +85,14 @@ const tokenMetaService = {
       return 0;
     }
   },
+
+  async findToken(tokenAddress: string) {
+    return tokenMetaRepo.findOne({tokenAddress})
+  },
+
+  async updateStatus(tokenAddress: string, status: string) {
+    return tokenMetaRepo.updateStatus(tokenAddress, status);
+  }
 };
 
 export default tokenMetaService;

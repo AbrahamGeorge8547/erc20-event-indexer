@@ -3,6 +3,8 @@ import { Btoken, Itoken } from "../interfaces/token.interface";
 import tokenRepo from "../repository/token.repo";
 
 import Logger from "../logger";
+import { Bfailed } from "../interfaces/failed.interface";
+import failedRepo from "../repository/failed.repo";
 
 const logger = new Logger("TokenService");
 
@@ -29,36 +31,41 @@ const tokenService = {
 
     let results: any = {};
     let indexedBlocks = 0;
-    for (let i = 0; i < totalBlocks / BATCH_SIZE; i++) {
+    while (indexedBlocks < totalBlocks) {
       let promises = [];
       for (let j = 0; j < BATCH_SIZE; j++) {
-        results[j] = { from: to - BLOCK_SIZE, to };
+        results[j] = { from: from, to: from+BLOCK_SIZE };
         promises.push(
-          contract.queryFilter(transferFilter, to - BLOCK_SIZE, to)
+          contract.queryFilter(transferFilter, from , from+BLOCK_SIZE)
         );
-        to -= BLOCK_SIZE + 1;
-        logger.debug(`indexing from ${to - BLOCK_SIZE} to ${to}`);
+        from = from+BLOCK_SIZE+1;
+        indexedBlocks += BLOCK_SIZE;
+        logger.debug(`indexing from ${from} to ${from+BLOCK_SIZE}`);
       }
-      indexedBlocks += 1;
       const result = await Promise.allSettled(promises);
-      logger.info(
-        `****Completed ${
-          ((indexedBlocks * BATCH_SIZE * BLOCK_SIZE) / totalBlocks) * 100
-        }****`
-      );
+      logger.info(`****Completed ${(indexedBlocks / totalBlocks) * 100}****`);
       let events: Btoken[] = [];
-      result.map((ele) => {
+      const failedEvents: Bfailed[] = [];
+      result.map((ele, index) => {
         if (ele.status == "fulfilled") {
           if (ele.value.length) {
             const transferEvents = this.prepareData(ele.value);
             events.push(...transferEvents);
           }
+        }else {
+          failedEvents.push({fromBlock: from, toBlock: to, tokenAddress})
         }
       });
+      logger.info(`Indexed ${indexedBlocks} blocks`);
+      // setTimeout(() => {
+      //   tokenRepo.insert(events, tokenAddress);
+      // }, 0);
+      //writing events that indexer failed to capture
       setTimeout(() => {
-        tokenRepo.insert(events, tokenAddress);
+        failedRepo.bulkWrite(failedEvents);
       }, 0);
     }
+    return;
   },
   /**
    *

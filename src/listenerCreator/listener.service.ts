@@ -4,12 +4,12 @@ const tokenService = require("../services/token.service");
 const connector = require("../models/databaseConnector");
 const Logger = require("../logger");
 
-const logger = new Logger.default("Listner");
+const logger = new Logger.default("Listener");
 
 connector.default();
 
 // dummy function so that typescript compiler doesnot ignore this function.
-const dMS1d2YRyPDJqmSemRUrMYListner = () => {
+const dMS1d2YRyPDJqmSemRUrMYListener = () => {
   const url = "https://mainnet.infura.io/v3/" + INFURA_ID;
   console.log(url);
   const provider = new ethers.providers.JsonRpcProvider(url);

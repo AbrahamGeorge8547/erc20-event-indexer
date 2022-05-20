@@ -13,6 +13,10 @@ const tokenMetaRepo = {
 
   findOne(data: FilterQuery<ItokenMeta>){
     return tokenMeta.findOne(data);
+  },
+
+  updateStatus(tokenAddress: string, status: string) {
+    return tokenMeta.updateOne({tokenAddress}, {status})
   }
 };
 

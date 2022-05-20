@@ -76,5 +76,8 @@ class Logger {
   public error(log: Error) {
     logger.error(`${this.moduleName} || ${this.functionName}|| ${log}`);
   }
+  public static general(log: string) {
+    logger.info(log)
+  }  
 }
 export default Logger;
