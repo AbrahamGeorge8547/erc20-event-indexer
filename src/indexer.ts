@@ -4,7 +4,8 @@ import tokenMetaService from "./services/meta.service";
 import Logger from "./logger";
 import tokenService from "./services/token.service";
 import listenerCreator from './listenerCreator'
-import { INFURA_ID, ERC20_ABI } from "./constants";
+import {  ERC20_ABI } from "./constants";
+import { INFURA_ID } from "./config";
 
 const indexer = async (tokenAddress: string) => {
   Logger.general("Initilizing provider...");

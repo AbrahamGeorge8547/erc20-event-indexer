@@ -7,6 +7,5 @@ const ERC20_ABI = [
   "event Transfer(address indexed from, address indexed to, uint amount)",
 ];
 
-const INFURA_ID = "85e60d507da543c7938e7e00d9df53e8";
 
-export { ERC20_ABI, INFURA_ID };
+export { ERC20_ABI};
