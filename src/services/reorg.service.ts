@@ -21,11 +21,11 @@ const reorgService = {
     const latestBlocks = await reorgRepo.find(tokenAddress);
     let foundBlock = false;
     if (latestBlocks.length > 4) {
-      latestBlocks.map(async (ele) => {
+      latestBlocks.map((ele) => {
         if (ele.blockNumber === blockNumber) {
           foundBlock = true;
           if (ele.blockHash != blockHash) {
-            await tokenService.deleteBlock(blockHash, tokenAddress);
+            setTimeout(() => {tokenService.deleteBlock(blockHash, tokenAddress)},0);
           }
         }
       });

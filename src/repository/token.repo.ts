@@ -33,6 +33,26 @@ const tokenRepo = {
   async deleteBlock(blockHash: string, tokenAddress: string) {
     const model = tokenSchema(tokenAddress);
     return model.deleteMany({tokenAddress, blockHash})
+  },
+/**
+ * 
+ * @param tokenAddress address of the token
+ * @param userAddress address of the user
+ * @returns all from transation
+ */
+  async getFromTransactions(tokenAddress: string, userAddress: string) {
+    const model = tokenSchema(tokenAddress);
+    return model.find({from: userAddress})
+  },
+/**
+ * 
+ * @param tokenAddress address of the token
+ * @param userAddress address of the user
+ * @returns all to transactions
+ */
+  async getToTransactions(tokenAddress: string, userAddress: string) {
+    const model = tokenSchema(tokenAddress);
+    return model.find({to: userAddress})
   }
 };
 

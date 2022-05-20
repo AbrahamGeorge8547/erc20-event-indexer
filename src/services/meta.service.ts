@@ -27,7 +27,7 @@ const tokenMetaService = {
       contract.symbol(),
       this.getFirstBlock(tokenAddress),
     ];
-    let firstBlock =0;
+    let firstBlock = 0;
     const result = await Promise.allSettled(promises);
     let data: Partial<ItokenMeta> = {};
     data.status = "CREATED";
@@ -87,12 +87,20 @@ const tokenMetaService = {
   },
 
   async findToken(tokenAddress: string) {
-    return tokenMetaRepo.findOne({tokenAddress})
+    return tokenMetaRepo.findOne({ tokenAddress });
   },
 
   async updateStatus(tokenAddress: string, status: string) {
     return tokenMetaRepo.updateStatus(tokenAddress, status);
-  }
+  },
+  /**
+ * 
+ * @returns metadata of all tokens
+ */
+  async getAllTokens() {
+    logger.entry("getAllTokens");
+    return tokenMetaRepo.getAllTokens();
+  },
 };
 
 export default tokenMetaService;

@@ -5,6 +5,7 @@ import tokenRepo from "../repository/token.repo";
 import Logger from "../logger";
 import { Bfailed } from "../interfaces/failed.interface";
 import failedRepo from "../repository/failed.repo";
+import ItokenMeta from "../interfaces/tokenMeta.interface";
 
 const logger = new Logger("TokenService");
 
@@ -112,11 +113,92 @@ const tokenService = {
       tokenAddress
     );
   },
-
+  /**
+   *
+   * @param blockHash hash of the block
+   * @param tokenAddress address of the token
+   * @description function to delete the block while chain reorg happens
+   */
   async deleteBlock(blockHash: string, tokenAddress: string) {
     logger.entry("DeleteBlock");
     logger.info(`Found faulty block with blockhash ${blockHash}`);
-    return tokenRepo.deleteBlock(blockHash, tokenAddress);
+    await tokenRepo.deleteBlock(blockHash, tokenAddress);
+  },
+  /**
+   *
+   * @param tokenMeta metadatas of supported tokens
+   * @param userAddress address of the user
+   * @returns all transactions indexed in db
+   * @description retirves transactions related to the user from db
+   */
+  async getAllTransactionsOfAccount(
+    tokenMeta: ItokenMeta[],
+    userAddress: string
+  ) {
+    const transactions = [];
+    //ToDo: optimize query with groups
+    for (let i = 0; i < tokenMeta.length; i++) {
+      const fromTransactions = await tokenRepo.getFromTransactions(
+        tokenMeta[i].tokenAddress,
+        userAddress
+      );
+      const toTransactions = await tokenRepo.getToTransactions(
+        tokenMeta[i].tokenAddress,
+        userAddress
+      );
+      if (fromTransactions.length == 0 && toTransactions.length == 0) {
+        continue;
+      }
+      const toParsed = this.prepareToTransactionData(
+        toTransactions,
+        tokenMeta[i].decimal
+      );
+      const fromParsed = this.prepareFromTransactionData(
+        fromTransactions,
+        tokenMeta[i].decimal
+      );
+      transactions.push({
+        [tokenMeta[i].symbol]: {
+          from: JSON.stringify(fromParsed),
+          to: JSON.stringify(toParsed),
+        },
+      });
+    }
+    return transactions;
+  },
+  /**
+   *
+   * @param transactions transactions of the user
+   * @param decimal precision of the token
+   * @returns formated data
+   * @description prepares transaction data to be returned
+   */
+  prepareFromTransactionData(transactions: Itoken[], decimal: number) {
+    const amounts = transactions.map((ele) => {
+      return {
+        to: ele.to,
+        amount: parseInt(ele.amount) / Math.pow(10, decimal),
+      };
+    });
+    return amounts;
+  },
+
+  /**
+   *
+   * @param transactions transactions of the user
+   * @param decimal precision of the token
+   * @returns formated data
+   * @description prepares transaction data to be returned
+   */
+  prepareToTransactionData(transactions: Itoken[], decimal: number) {
+    const amounts = transactions.map((ele) => {
+      return {
+        to: ele.to,
+        amount: parseInt(ele.amount) / Math.pow(10, decimal),
+      };
+    });
+
+    return amounts;
   },
 };
 

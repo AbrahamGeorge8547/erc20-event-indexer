@@ -16,6 +16,7 @@ const indexer = async (tokenAddress: string) => {
 
   if(!tokenMetaData) {  
     const firstBlock = await tokenMetaService.createTokenMetadata(tokenAddress, contract);
+    // create listner for the address
     await listenerCreator(tokenAddress);
     const lastBlock = await provider.getBlockNumber();
     setTimeout(() => {
@@ -26,8 +27,7 @@ const indexer = async (tokenAddress: string) => {
   }else {
     Logger.general("Indexer or listner already running")
   }
-
-
+  process.exit(0);
 };
 
 export default indexer;
