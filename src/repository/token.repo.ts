@@ -29,6 +29,11 @@ const tokenRepo = {
       logger.error(error);
     }
   },
+
+  async deleteBlock(blockHash: string, tokenAddress: string) {
+    const model = tokenSchema(tokenAddress);
+    return model.deleteMany({tokenAddress, blockHash})
+  }
 };
 
 export default tokenRepo;

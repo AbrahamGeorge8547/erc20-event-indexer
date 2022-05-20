@@ -34,13 +34,13 @@ const tokenService = {
     while (indexedBlocks < totalBlocks) {
       let promises = [];
       for (let j = 0; j < BATCH_SIZE; j++) {
-        results[j] = { from: from, to: from+BLOCK_SIZE };
+        results[j] = { from: from, to: from + BLOCK_SIZE };
         promises.push(
-          contract.queryFilter(transferFilter, from , from+BLOCK_SIZE)
+          contract.queryFilter(transferFilter, from, from + BLOCK_SIZE)
         );
-        from = from+BLOCK_SIZE+1;
+        from = from + BLOCK_SIZE + 1;
         indexedBlocks += BLOCK_SIZE;
-        logger.debug(`indexing from ${from} to ${from+BLOCK_SIZE}`);
+        logger.debug(`indexing from ${from} to ${from + BLOCK_SIZE}`);
       }
       const result = await Promise.allSettled(promises);
       logger.info(`****Completed ${(indexedBlocks / totalBlocks) * 100}****`);
@@ -52,14 +52,14 @@ const tokenService = {
             const transferEvents = this.prepareData(ele.value);
             events.push(...transferEvents);
           }
-        }else {
-          failedEvents.push({fromBlock: from, toBlock: to, tokenAddress})
+        } else {
+          failedEvents.push({ fromBlock: from, toBlock: to, tokenAddress });
         }
       });
       logger.info(`Indexed ${indexedBlocks} blocks`);
-      // setTimeout(() => {
-      //   tokenRepo.insert(events, tokenAddress);
-      // }, 0);
+      setTimeout(() => {
+        tokenRepo.insert(events, tokenAddress);
+      }, 0);
       //writing events that indexer failed to capture
       setTimeout(() => {
         failedRepo.bulkWrite(failedEvents);
@@ -111,6 +111,12 @@ const tokenService = {
       ],
       tokenAddress
     );
+  },
+
+  async deleteBlock(blockHash: string, tokenAddress: string) {
+    logger.entry("DeleteBlock");
+    logger.info(`Found faulty block with blockhash ${blockHash}`);
+    return tokenRepo.deleteBlock(blockHash, tokenAddress);
   },
 };
 

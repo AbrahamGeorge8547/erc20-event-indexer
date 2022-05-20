@@ -7,5 +7,5 @@ const failedSchema = new Schema<Ifailed>({
   tokenAddress: String,
 });
 
-const tokenModel = model("failedRequests", failedSchema);
-export default tokenModel;
+const failedModel = model("failedRequests", failedSchema);
+export default failedModel;

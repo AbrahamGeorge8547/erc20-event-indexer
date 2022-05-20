@@ -21,9 +21,12 @@ const ${id}Listener = () => {
   const tokenAddress = "${tokenAddress}";
   const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
   contract.on("Transfer", async (to, amount, from, transaction) => {
-      const debugMsg = "New transfer event" + transaction.transactionHash
-      logger.debug(debugMsg)
+    const debugMsg = "New transfer event" + transaction.transactionHash
+    logger.debug(debugMsg)
     await tokenService.default.addNewEvent(transaction, tokenAddress);
+    const blockNumber = transaction.blockNumber;
+    const blockHash = transaction.blockHash;
+    await reorgService.default.checkFaultyBlock(blockNumber, blockHash, tokenAddress);
   });
 }
 ${id}Listener()`;

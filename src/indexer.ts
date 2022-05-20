@@ -16,7 +16,7 @@ const indexer = async (tokenAddress: string) => {
 
   if(!tokenMetaData) {  
     const firstBlock = await tokenMetaService.createTokenMetadata(tokenAddress, contract);
-    // await listenerCreator(tokenAddress);
+    await listenerCreator(tokenAddress);
     const lastBlock = await provider.getBlockNumber();
     setTimeout(() => {
       tokenMetaService.updateStatus(tokenAddress, "INDEXING")

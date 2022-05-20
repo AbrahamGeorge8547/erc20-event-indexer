@@ -3,6 +3,7 @@ const { INFURA_ID, ERC20_ABI } = require("../constants");
 const tokenService = require("../services/token.service");
 const connector = require("../models/databaseConnector");
 const Logger = require("../logger");
+const reorgService = require("../services/reorg.service");
 
 const logger = new Logger.default("Listener");
 
@@ -15,6 +16,7 @@ const dMS1d2YRyPDJqmSemRUrMYListener = () => {
   const provider = new ethers.providers.JsonRpcProvider(url);
   const tokenAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
   const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+  reorgService;
   // contract.on("Transfer", async (to, amount, from, transactionHash) => {
   //   await tokenService.default.addNewEvent(transactionHash, tokenAddress);
   // });
